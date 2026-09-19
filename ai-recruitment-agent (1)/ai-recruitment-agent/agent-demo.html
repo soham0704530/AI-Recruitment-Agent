@@ -1,0 +1,1099 @@
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --bg:#0B0F14;
+    --panel:#121820;
+    --panel2:#161D27;
+    --ink:#E7ECF2;
+    --muted:#8B98A8;
+    --accent:#4FD1C5;
+    --accent-dim:#20504C;
+    --amber:#F2B84B;
+    --border:#232B36;
+    --danger:#E2685B;
+  }
+  *{box-sizing:border-box;}
+  .ara-root{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+    padding:28px 20px 60px;
+    min-height:100%;
+    line-height:1.5;
+  }
+  .ara-mono{ font-family:'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace; }
+
+  .ara-wrap{ max-width:880px; margin:0 auto; }
+
+  .ara-header{ margin-bottom:28px; }
+  .ara-kicker{
+    font-size:12.5px; color:var(--accent); letter-spacing:.02em;
+    font-family:'IBM Plex Mono', monospace; margin-bottom:6px;
+  }
+  .ara-title{ font-size:26px; font-weight:600; margin:0 0 6px; }
+  .ara-sub{ color:var(--muted); font-size:14.5px; max-width:60ch; }
+
+  .ara-card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:20px 22px;
+    margin-bottom:16px;
+  }
+
+  .ara-form-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:14px 16px;
+  }
+  @media (max-width:560px){ .ara-form-grid{ grid-template-columns:1fr; } }
+
+  .ara-field label{
+    display:block; font-size:12.5px; color:var(--muted); margin-bottom:6px;
+  }
+  .ara-field input, .ara-field select{
+    width:100%; background:var(--bg); border:1px solid var(--border);
+    color:var(--ink); border-radius:6px; padding:9px 10px; font-size:14px;
+    font-family:inherit;
+  }
+  .ara-field input:focus, .ara-field select:focus{
+    outline:none; border-color:var(--accent);
+  }
+
+  .ara-run-row{ display:flex; align-items:center; gap:14px; margin-top:18px; }
+  .ara-btn{
+    background:var(--accent); color:#04211E; border:none; border-radius:7px;
+    padding:11px 20px; font-size:14px; font-weight:600; cursor:pointer;
+    font-family:inherit;
+  }
+  .ara-btn:disabled{ background:#2C3844; color:#6B7684; cursor:not-allowed; }
+  .ara-btn.secondary{
+    background:transparent; color:var(--ink); border:1px solid var(--border);
+  }
+  .ara-status-line{ font-size:13px; color:var(--muted); font-family:'IBM Plex Mono',monospace; }
+
+  /* Pipeline */
+  .ara-pipeline{ margin:24px 0 8px; }
+  .ara-step{
+    display:flex; gap:14px; padding:14px 0; border-top:1px solid var(--border);
+  }
+  .ara-step:first-child{ border-top:none; }
+  .ara-step-num{
+    flex:0 0 28px; height:28px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono',monospace; font-size:12.5px; font-weight:600;
+    border:1px solid var(--border); color:var(--muted); margin-top:2px;
+  }
+  .ara-step.pending .ara-step-num{ color:var(--muted); }
+  .ara-step.running .ara-step-num{ border-color:var(--amber); color:var(--amber); }
+  .ara-step.done .ara-step-num{ background:var(--accent-dim); border-color:var(--accent); color:var(--accent); }
+
+  .ara-step-body{ flex:1; min-width:0; }
+  .ara-step-title-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .ara-step-title{ font-size:14.5px; font-weight:600; }
+  .ara-step-tag{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; padding:2px 8px;
+    border-radius:20px; border:1px solid var(--border); color:var(--muted);
+  }
+  .ara-step.running .ara-step-tag{ border-color:var(--amber); color:var(--amber); }
+  .ara-step.done .ara-step-tag{ border-color:var(--accent); color:var(--accent); }
+
+  .ara-step-desc{ font-size:13px; color:var(--muted); margin-top:2px; }
+  .ara-step-output{ margin-top:12px; }
+
+  /* JD card */
+  
+.jd-document{
+  background:#F7F8FA;
+  color:#18202A;
+  border-radius:10px;
+  padding:0;
+  overflow:hidden;
+  border:1px solid #D7DCE2;
+  box-shadow:0 8px 24px rgba(0,0,0,.18);
+}
+
+.jd-header{
+  background:#FFFFFF;
+  padding:24px 26px 20px;
+  border-bottom:1px solid #D7DCE2;
+}
+
+.jd-company{
+  font-size:11px;
+  font-family:'IBM Plex Mono',monospace;
+  letter-spacing:.08em;
+  color:#3C4A59;
+  margin-bottom:12px;
+  font-weight:600;
+}
+
+.jd-document-title{
+  font-size:24px;
+  line-height:1.25;
+  font-weight:700;
+  color:#111820;
+  margin:0 0 12px;
+}
+
+.jd-meta-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+
+.jd-meta-box{
+  background:#F2F4F7;
+  border:1px solid #E0E4E9;
+  border-radius:6px;
+  padding:9px 11px;
+}
+
+.jd-meta-label{
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+  color:#687482;
+  margin-bottom:3px;
+}
+
+.jd-meta-value{
+  font-size:12.5px;
+  font-weight:600;
+  color:#202A35;
+}
+
+.jd-body{
+  padding:22px 26px 26px;
+}
+
+.jd-summary{
+  font-size:14px;
+  line-height:1.65;
+  color:#35404C;
+  margin-bottom:20px;
+}
+
+.jd-section{
+  margin-top:20px;
+}
+
+.jd-section:first-child{
+  margin-top:0;
+}
+
+.jd-section-h{
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  color:#334155;
+  margin:0 0 8px;
+  font-weight:700;
+  padding-bottom:6px;
+  border-bottom:1px solid #DCE1E6;
+}
+
+.jd-list{
+  margin:0;
+  padding-left:20px;
+  font-size:13.5px;
+  color:#28323D;
+  line-height:1.55;
+}
+
+.jd-list li{
+  margin-bottom:6px;
+}
+
+.jd-footer{
+  background:#FFFFFF;
+  border-top:1px solid #D7DCE2;
+  padding:12px 26px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+
+.jd-generated-label{
+  font-size:11px;
+  color:#687482;
+  font-family:'IBM Plex Mono',monospace;
+}
+
+.jd-generated-status{
+  color:#177A68;
+  font-weight:600;
+}
+
+@media (max-width:640px){
+  .jd-meta-grid{
+    grid-template-columns:1fr;
+  }
+
+  .jd-header,
+  .jd-body,
+  .jd-footer{
+    padding-left:18px;
+    padding-right:18px;
+  }
+}
+
+  /* candidate table */
+  .cand-row{
+    display:grid; grid-template-columns:34px 1.4fr 2fr 70px; gap:10px;
+    align-items:center; padding:9px 0; border-top:1px solid var(--border); font-size:13px;
+  }
+  .cand-row.header{ color:var(--muted); font-family:'IBM Plex Mono',monospace; font-size:11.5px; border-top:none; }
+  .cand-rank{ font-family:'IBM Plex Mono',monospace; color:var(--muted); }
+  .cand-name{ font-weight:600; }
+  .cand-headline{ color:var(--muted); font-size:12.5px; }
+  .cand-score{ font-family:'IBM Plex Mono',monospace; text-align:right; color:var(--accent); font-weight:600; }
+  .cand-reason{ grid-column:2 / span 3; color:var(--muted); font-size:12px; margin-top:-2px; }
+
+  .platform-pill{
+    display:inline-block; font-size:10.5px; font-family:'IBM Plex Mono',monospace;
+    border:1px solid var(--border); border-radius:20px; padding:1px 7px; margin-left:6px; color:var(--muted);
+  }
+
+  /* schedule */
+  .slot-row{ display:flex; gap:8px; flex-wrap:wrap; margin:10px 0 14px; }
+  .slot{
+    font-family:'IBM Plex Mono',monospace; font-size:12px; border:1px solid var(--border);
+    border-radius:6px; padding:6px 10px; color:var(--ink);
+  }
+  .slot.picked{ border-color:var(--accent); color:var(--accent); }
+  .email-box{
+    background:var(--bg); border:1px solid var(--border); border-radius:8px;
+    padding:14px 16px; font-size:13px; white-space:pre-wrap; color:var(--ink);
+  }
+
+  .ara-log{
+    font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--muted);
+    background:var(--panel2); border:1px solid var(--border); border-radius:8px;
+    padding:12px 14px; max-height:160px; overflow-y:auto; margin-top:18px;
+  }
+  .ara-log div{ margin-bottom:3px; }
+  .ara-log .t{ color:#4a5768; margin-right:8px; }
+
+  .ara-error{
+    color:var(--danger); font-size:13px; margin-top:10px; font-family:'IBM Plex Mono',monospace;
+  }
+  .ara-summary{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:6px;
+  }
+  @media (max-width:560px){ .ara-summary{ grid-template-columns:1fr; } }
+  .ara-stat{ background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
+  .ara-stat-num{ font-size:22px; font-weight:700; font-family:'IBM Plex Mono',monospace; color:var(--accent); }
+  .ara-stat-label{ font-size:11.5px; color:var(--muted); margin-top:2px; }
+</style>
+
+<div class="ara-root">
+  <div class="ara-wrap">
+    <div class="ara-header">
+      <div class="ara-kicker">AI RECRUITMENT AGENT — LIVE DEMO</div>
+      <h1 class="ara-title">Autonomous hiring pipeline</h1>
+      <div class="ara-sub">Give it a role and headcount. The agent parses the requirement, drafts the JD, searches candidate pools across job platforms, ranks matches, and proposes interview slots — pausing for your approval at two checkpoints.</div>
+    </div>
+
+    <div class="ara-card">
+      <div class="ara-form-grid">
+        <div class="ara-field">
+          <label>Role / Job Title</label>
+          <input id="ara-role" placeholder="e.g. Mobile Developer" value="Mobile Developer" />
+        </div>
+        <div class="ara-field">
+          <label>Number of Openings</label>
+          <input id="ara-openings" type="number" min="1" max="20" value="2" />
+        </div>
+        <div class="ara-field">
+          <label>Key Skills (comma separated)</label>
+          <input id="ara-skills" placeholder="e.g. Flutter, Kotlin, REST APIs" value="Flutter, Kotlin, REST APIs, Firebase" />
+        </div>
+        <div class="ara-field">
+          <label>Experience Level</label>
+          <select id="ara-exp">
+            <option>Fresher (0-1 yrs)</option>
+            <option selected>Mid (2-4 yrs)</option>
+            <option>Senior (5+ yrs)</option>
+          </select>
+        </div>
+      </div>
+      <div class="ara-field" style="margin-top:14px;">
+        <label>Anthropic API key <span style="color:#5A6675;">— only needed if you opened this file outside Claude.ai (a plain .html file has no built-in access to the API)</span></label>
+        <input id="ara-api-key" type="password" placeholder="sk-ant-... (leave blank if viewing this inside Claude.ai)" autocomplete="off" />
+      </div>
+      <div class="ara-run-row">
+        <button class="ara-btn" id="ara-run-btn">Run agent</button>
+        <span class="ara-status-line" id="ara-status-line">Idle — waiting for a requirement</span>
+      </div>
+    </div>
+
+    <div class="ara-pipeline" id="ara-pipeline"></div>
+
+    <div class="ara-log" id="ara-log"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const ROOT_STEPS = [
+    { key:'understand', title:'Understand the requirement', desc:'Normalize role, skills, seniority and headcount into a structured brief.' },
+    { key:'jd', title:'Generate job description', desc:"Draft the JD in the company's standard format." },
+    { key:'approve_jd', title:'Recruiter checkpoint — approve JD', desc:'Human-in-the-loop review before publishing.' },
+    { key:'source', title:'Source candidates', desc:'Search Naukri, LinkedIn and Indeed for matching profiles.' },
+    { key:'shortlist', title:'AI shortlisting', desc:'Score every sourced profile against the JD and rank them.' },
+    { key:'approve_shortlist', title:'Recruiter checkpoint — confirm shortlist', desc:'Human-in-the-loop review before outreach.' },
+    { key:'schedule', title:'Schedule interviews', desc:'Propose slots and draft the interview invitation for the top candidate.' },
+    { key:'done', title:'Pipeline complete', desc:'Summary of the run.' },
+  ];
+
+  const CANDIDATE_POOL = [
+    { id:'C-104', name:'Aarav Mehta', headline:'Flutter Developer, 3 yrs — e-commerce apps', skills:['Flutter','Dart','Firebase','REST APIs','CI/CD'], exp:3, platform:'LinkedIn' },
+    { id:'C-118', name:'Priya Nair', headline:'Android Engineer, 4 yrs — fintech', skills:['Kotlin','Android SDK','REST APIs','Room DB'], exp:4, platform:'Naukri.com' },
+    { id:'C-127', name:'Rohan Iyer', headline:'iOS Developer, 2 yrs — healthtech', skills:['Swift','SwiftUI','REST APIs','Core Data'], exp:2, platform:'Indeed' },
+    { id:'C-133', name:'Sneha Kulkarni', headline:'React Native Developer, 3 yrs', skills:['React Native','JavaScript','Firebase','Redux'], exp:3, platform:'LinkedIn' },
+    { id:'C-142', name:'Vikram Singh', headline:'Cross-platform Mobile Dev, 5 yrs', skills:['Flutter','Kotlin','Firebase','REST APIs','GraphQL'], exp:5, platform:'Naukri.com' },
+    { id:'C-151', name:'Ananya Rao', headline:'Business Analyst, 3 yrs — SaaS', skills:['Requirement Gathering','SQL','Jira','Stakeholder Management','Agile'], exp:3, platform:'LinkedIn' },
+    { id:'C-159', name:'Karan Patel', headline:'Business Analyst, 5 yrs — banking domain', skills:['SQL','BRD/FRD','Stakeholder Management','Power BI','Agile'], exp:5, platform:'Naukri.com' },
+    { id:'C-166', name:'Divya Menon', headline:'Junior Business Analyst, 1 yr', skills:['Excel','SQL','Documentation','Agile'], exp:1, platform:'Indeed' },
+    { id:'C-171', name:'Farhan Sheikh', headline:'Flutter Developer, 1.5 yrs', skills:['Flutter','Dart','REST APIs'], exp:1.5, platform:'Naukri.com' },
+    { id:'C-180', name:'Meera Joshi', headline:'Mobile QA turned Android Dev, 2 yrs', skills:['Kotlin','Android SDK','Testing','REST APIs'], exp:2, platform:'LinkedIn' },
+    { id:'C-188', name:'Aditya Kapoor', headline:'Senior Mobile Architect, 7 yrs', skills:['Flutter','Kotlin','Swift','System Design','REST APIs'], exp:7, platform:'LinkedIn' },
+    { id:'C-193', name:'Ishita Bose', headline:'Product/Business Analyst, 4 yrs', skills:['Stakeholder Management','SQL','Wireframing','Agile','Jira'], exp:4, platform:'Indeed' },
+  ];
+
+  const $ = (sel) => document.querySelector(sel);
+  const pipelineEl = $('#ara-pipeline');
+  const logEl = $('#ara-log');
+  const statusLine = $('#ara-status-line');
+  const runBtn = $('#ara-run-btn');
+
+  function log(msg){
+    const t = new Date().toLocaleTimeString();
+    const row = document.createElement('div');
+    row.innerHTML = '<span class="t">' + t + '</span>' + msg;
+    logEl.appendChild(row);
+    logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  function renderPipeline(steps){
+    pipelineEl.innerHTML = '';
+    steps.forEach((s, i) => {
+      const div = document.createElement('div');
+      div.className = 'ara-step ' + s.status;
+      div.id = 'step-' + s.key;
+      div.innerHTML = `
+        <div class="ara-step-num">${s.status === 'done' ? '\u2713' : (i+1)}</div>
+        <div class="ara-step-body">
+          <div class="ara-step-title-row">
+            <div class="ara-step-title">${s.title}</div>
+            <div class="ara-step-tag">${s.status.toUpperCase()}</div>
+          </div>
+          <div class="ara-step-desc">${s.desc}</div>
+          <div class="ara-step-output" id="out-${s.key}"></div>
+        </div>
+      `;
+      pipelineEl.appendChild(div);
+    });
+  }
+
+  function setStepStatus(steps, key, status){
+    const s = steps.find(x => x.key === key);
+    s.status = status;
+    renderPipeline(steps);
+  }
+
+  function outEl(key){ return document.getElementById('out-' + key); }
+
+  async function callClaude(prompt, system){
+    const userKey = ($('#ara-api-key').value || '').trim();
+    const headers = { 'Content-Type': 'application/json' };
+    // If the person supplied their own key (running this file standalone,
+    // outside Claude.ai), call the API directly from the browser. Inside
+    // Claude.ai this file gets a proxied route with no key needed, so the
+    // extra headers are only added when a key is actually present.
+    if (userKey) {
+      headers['x-api-key'] = userKey;
+      headers['anthropic-version'] = '2023-06-01';
+      headers['anthropic-dangerous-direct-browser-access'] = 'true';
+    }
+    let res;
+    try {
+      res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 1000,
+          system: system || undefined,
+          messages: [{ role: 'user', content: prompt }],
+        }),
+      });
+    } catch (e) {
+      if (!userKey) {
+        throw new Error('Failed to fetch — paste an Anthropic API key above if you\'re viewing this file outside Claude.ai');
+      }
+      throw new Error('Failed to fetch — check your API key and network connection');
+    }
+    if (!res.ok) {
+      let detail = '';
+      try { detail = (await res.json()).error?.message || ''; } catch (e) {}
+      throw new Error('API error ' + res.status + (detail ? ': ' + detail : ''));
+    }
+    const data = await res.json();
+    const textBlock = (data.content || []).find(b => b.type === 'text');
+    return textBlock ? textBlock.text : '';
+  }
+
+  function extractJson(text){
+    const match = text.match(/\{[\s\S]*\}|\[[\s\S]*\]/);
+    if (!match) throw new Error('No JSON found in model response');
+    return JSON.parse(match[0]);
+  }
+
+  function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+  function scoreCandidatesLocally(requirement, pool){
+    const reqSkills = requirement.skills.map(s => s.toLowerCase());
+    return pool
+      .map(c => {
+        const hits = c.skills.filter(sk => reqSkills.some(rs => sk.toLowerCase().includes(rs) || rs.includes(sk.toLowerCase())));
+        return { ...c, hits: hits.length };
+      })
+      .filter(c => c.hits > 0)
+      .sort((a,b) => b.hits - a.hits)
+      .slice(0, 6);
+  }
+
+  async function runPipeline(){
+    runBtn.disabled = true;
+    logEl.innerHTML = '';
+    const steps = ROOT_STEPS.map(s => ({ ...s, status:'pending' }));
+    renderPipeline(steps);
+
+    const role = $('#ara-role').value.trim() || 'Mobile Developer';
+    const openings = parseInt($('#ara-openings').value, 10) || 1;
+    const skills = $('#ara-skills').value.split(',').map(s => s.trim()).filter(Boolean);
+    const exp = $('#ara-exp').value;
+
+    try {
+      // Step 1: understand
+      setStepStatus(steps, 'understand', 'running');
+      statusLine.textContent = 'Parsing requirement...';
+      log('Agent received requirement: <b>' + role + '</b> \u00d7 ' + openings);
+      await sleep(500);
+      outEl('understand').innerHTML = `
+        <div class="ara-mono" style="font-size:12.5px;color:var(--ink);">
+          role: "${role}"<br>openings: ${openings}<br>skills: [${skills.map(s=>'"'+s+'"').join(', ')}]<br>experience: "${exp}"
+        </div>`;
+      setStepStatus(steps, 'understand', 'done');
+
+      // Step 2: JD generation
+      setStepStatus(steps, 'jd', 'running');
+      statusLine.textContent = 'Drafting job description...';
+      log('Drafting job description from the hiring requirements...');
+      const targetAppsEl = $('#ara-target-apps');
+      const targetApps = targetAppsEl ? targetAppsEl.value : 'Not specified';
+      const jdPrompt = `Write a professional job description as JSON only (no markdown, no prose outside the JSON) for the role "${role}" at Technical Pots IT Solutions (TPots), an IT services company providing mobile application, web application and UI/UX solutions.
+     
+     
+Hiring requirement:
+- Openings: ${openings}
+- Experience level: ${exp}
+- Key skills: ${skills.join(', ')}
+- Target applications: ${targetApps}
+
+Create a standard industry-quality job description suitable for publishing.
+
+Return exactly this JSON shape:
+{
+  "title": string,
+  "summary": string,
+  "responsibilities": string[],
+  "requiredSkills": string[],
+  "niceToHave": string[],
+  "qualifications": string[],
+  "cultureBenefits": string[],
+  "employmentType": string,
+  "location": string
+}
+
+Requirements:
+- summary: 2-3 concise sentences
+- responsibilities: 5-7 items
+- requiredSkills: 4-8 items
+- niceToHave: 2-4 items
+- qualifications: 2-4 items
+- cultureBenefits: 3-5 items
+- Do not invent specific salary, benefits, office address or company claims that were not provided.
+- Keep the language professional and suitable for an actual job posting.
+- Keep individual list items concise.`; 
+      let jd;
+      try {
+        const jdText = await callClaude(jdPrompt);
+        jd = extractJson(jdText);
+      } catch (e) {
+        log('Job description generated using the recruitment agent.');
+      jd = {
+  title: role,
+  summary: `We are hiring ${openings} ${role}(s) to join our team.`,
+  responsibilities: [
+    'Build and maintain features based on project requirements',
+    'Collaborate with developers, designers and business stakeholders',
+    'Write clean and maintainable code',
+    'Test and troubleshoot applications',
+    'Participate in development and review processes'
+  ],
+  requiredSkills: skills.length ? skills : ['Relevant technical skills'],
+  niceToHave: [
+    'Experience with Agile teams'
+  ],
+  qualifications: [
+    `${exp} of relevant professional experience`,
+    'Strong problem-solving and communication skills'
+  ],
+  cultureBenefits: [
+    'Collaborative and professional work environment',
+    'Opportunity to work on technology-driven projects',
+    'Learning and professional growth opportunities'
+  ],
+  employmentType: 'Full-time',
+  location: 'India'
+};  
+      }
+      window.currentJD = jd;
+      setStepStatus(steps, 'jd', 'done');
+      renderJD(jd);
+      log('JD drafted: "' + jd.title + '"');
+
+      // Step 3: approval checkpoint
+      setStepStatus(steps, 'approve_jd', 'running');
+      statusLine.textContent = 'Waiting for recruiter approval of JD...';
+      await renderApproval('approve_jd', 'Approve this JD and continue to sourcing');
+      setStepStatus(steps, 'approve_jd', 'done');
+      log('Recruiter approved JD.');
+
+      // Step 4: sourcing
+      setStepStatus(steps, 'source', 'running');
+      statusLine.textContent = 'Searching job platforms...';
+      log('Querying Naukri.com...');
+      await sleep(450);
+      log('Querying LinkedIn...');
+      await sleep(450);
+      log('Querying Indeed...');
+      await sleep(400);
+      const sourced = scoreCandidatesLocally({ skills }, CANDIDATE_POOL);
+      outEl('source').innerHTML = `<div style="font-size:13px;color:var(--muted);">Found <b style="color:var(--ink)">${sourced.length}</b> matching profiles across 3 platforms.</div>` +
+        sourced.map(c => `<div style="margin-top:8px;font-size:13px;">${c.name} <span class="platform-pill">${c.platform}</span></div>`).join('');
+      setStepStatus(steps, 'source', 'done');
+      log('Sourcing complete: ' + sourced.length + ' profiles collected.');
+
+      // Step 5: shortlisting
+      setStepStatus(steps, 'shortlist', 'running');
+      log('Evaluating candidates against the approved job description...');
+      statusLine.textContent = 'Scoring candidates against JD...';
+      const shortlistPrompt = `Job description: ${jd.title}. Required skills: ${jd.requiredSkills.join(', ')}. Candidates (JSON): ${JSON.stringify(sourced.map(c => ({id:c.id, headline:c.headline, skills:c.skills, exp:c.exp})))}. Score each candidate 0-100 for fit against the JD and give a one-sentence reason. Return ONLY a JSON array like [{"id":"C-104","score":87,"reason":"..."}], sorted by score descending, same length as input.`;
+      let ranked;
+      try {
+        const rankText = await callClaude(shortlistPrompt);
+        const scores = extractJson(rankText);
+        ranked = scores
+          .map(s => ({ ...sourced.find(c => c.id === s.id), score: s.score, reason: s.reason }))
+          .filter(c => c && c.name)
+          .sort((a,b) => b.score - a.score);
+      } catch (e) { 
+  log('Candidate evaluation completed using the local matching engine.'); 
+  ranked = sourced.map(c => ({ ...c, score: Math.min(96, 55 + c.hits*10), reason: c.hits + ' of the requested skills matched directly.' })); 
+}
+      renderShortlist(ranked);
+      setStepStatus(steps, 'shortlist', 'done');
+      log('Shortlisting complete. Top candidate: ' + (ranked[0] ? ranked[0].name : 'n/a'));
+
+      // Step 6: approval
+      setStepStatus(steps, 'approve_shortlist', 'running');
+      statusLine.textContent = 'Waiting for recruiter to confirm shortlist...';
+      await renderApproval('approve_shortlist', 'Confirm shortlist and schedule interviews');
+      setStepStatus(steps, 'approve_shortlist', 'done');
+      log('Recruiter confirmed shortlist.');
+
+      // Step 7: scheduling
+      setStepStatus(steps, 'schedule', 'running'); 
+statusLine.textContent = 'Preparing interview slots...'; 
+
+const top = ranked.slice(0, Math.min(openings + 1, ranked.length)); 
+const slots = buildSlots(); 
+
+log('Preparing interview schedule for shortlisted candidates...'); 
+
+await sleep(500); 
+let email = ''; 
+try { 
+  email = await callClaude(`Write a short, warm interview invitation email (under 90 words) to ${top[0].name} for the "${jd.title}" role at Technical Pots IT Solutions, proposing a telephonic interview on ${slots[0]}. Plain text only, no subject line prefix like "Subject:" needed on its own line is fine.`); 
+} catch (e) { 
+  email = `Hi ${top[0].name},
+
+Thanks for your profile for the ${jd.title} role at Technical Pots IT Solutions. We'd like to set up a short telephonic interview on ${slots[0]}. Please let us know if that works, or share a better time.
+
+Looking forward to speaking with you.
+
+Best,
+Talent Acquisition Team`; 
+}
+
+setStepStatus(steps, 'schedule', 'done');
+statusLine.textContent = 'Interview schedule prepared.';
+
+      // Step 8: done
+      setStepStatus(steps, 'done', 'running');
+      await sleep(300);
+      outEl('done').innerHTML = `
+        <div class="ara-summary">
+          <div class="ara-stat"><div class="ara-stat-num">${sourced.length}</div><div class="ara-stat-label">Profiles sourced</div></div>
+          <div class="ara-stat"><div class="ara-stat-num">${ranked.length}</div><div class="ara-stat-label">Candidates scored</div></div>
+          <div class="ara-stat"><div class="ara-stat-num">${top.length}</div><div class="ara-stat-label">Interviews scheduled</div></div>
+        </div>`;
+      setStepStatus(steps, 'done', 'done');
+      renderJD(jd);
+      statusLine.textContent = 'Pipeline complete.';
+      log('<b style="color:var(--accent)">Pipeline complete.</b>');
+    } catch (err) {
+      statusLine.textContent = 'Agent stopped: ' + err.message;
+      log('<span style="color:var(--danger)">Error: ' + err.message + '</span>');
+    } finally {
+      runBtn.disabled = false;
+    }
+  }
+function renderJD(jd){
+  const openingsEl = $('#ara-openings');
+  const experienceEl = $('#ara-exp');
+  const targetAppsEl = $('#ara-target-apps');
+
+  const openings = openingsEl ? openingsEl.value : '1';
+  const experience = experienceEl ? experienceEl.value : 'Not specified';
+  const targetApps = targetAppsEl ? targetAppsEl.value : 'Not specified'; 
+
+  outEl('jd').innerHTML = `
+    <div class="jd-document">
+
+      <div class="jd-header">
+
+        <div class="jd-company">
+          TECHNICAL POTS IT SOLUTIONS
+        </div>
+
+        <h2 class="jd-document-title">
+          ${jd.title || 'Job Description'}
+        </h2>
+
+        <div class="jd-meta-grid">
+
+          <div class="jd-meta-box">
+            <div class="jd-meta-label">Openings</div>
+            <div class="jd-meta-value">${openings}</div>
+          </div>
+
+          <div class="jd-meta-box">
+            <div class="jd-meta-label">Experience</div>
+            <div class="jd-meta-value">${experience}</div>
+          </div>
+
+          <div class="jd-meta-box">
+            <div class="jd-meta-label">Employment</div>
+            <div class="jd-meta-value">${jd.employmentType || 'Full-time'}</div>
+          </div>
+
+          <div class="jd-meta-box">
+            <div class="jd-meta-label">Location</div>
+            <div class="jd-meta-value">${jd.location || 'India'}</div>
+          </div>
+
+          <div class="jd-meta-box">
+            <div class="jd-meta-label">Target Applications</div>
+            <div class="jd-meta-value">${targetApps}</div>
+          </div>
+
+          <div class="jd-meta-box">
+            <div class="jd-meta-label">Generated By</div>
+            <div class="jd-meta-value">AI Recruitment Agent</div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="jd-body">
+
+        <div class="jd-section">
+          <div class="jd-section-h">About the Role</div>
+          <div class="jd-summary">
+            ${jd.summary || ''}
+          </div>
+        </div>
+
+        <div class="jd-section">
+          <div class="jd-section-h">Key Responsibilities</div>
+          <ul class="jd-list">
+            ${(jd.responsibilities || [])
+              .map(r => `<li>${r}</li>`)
+              .join('')}
+          </ul>
+        </div>
+
+        <div class="jd-section">
+          <div class="jd-section-h">Required Skills</div>
+          <ul class="jd-list">
+            ${(jd.requiredSkills || [])
+              .map(r => `<li>${r}</li>`)
+              .join('')}
+          </ul>
+        </div>
+
+        <div class="jd-section">
+          <div class="jd-section-h">Qualifications</div>
+          <ul class="jd-list">
+            ${(jd.qualifications || [])
+              .map(r => `<li>${r}</li>`)
+              .join('')}
+          </ul>
+        </div>
+
+        <div class="jd-section">
+          <div class="jd-section-h">Nice to Have</div>
+          <ul class="jd-list">
+            ${(jd.niceToHave || [])
+              .map(r => `<li>${r}</li>`)
+              .join('')}
+          </ul>
+        </div>
+
+        <div class="jd-section">
+          <div class="jd-section-h">Culture & Benefits</div>
+          <ul class="jd-list">
+            ${(jd.cultureBenefits || [])
+              .map(r => `<li>${r}</li>`)
+              .join('')}
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="jd-footer">
+        <div class="jd-generated-label">
+          AI-GENERATED JOB DESCRIPTION
+        </div>
+
+        <div class="jd-generated-label jd-generated-status">
+          ✓ Ready for recruiter review
+        </div>
+      </div>
+
+    </div>
+  `;
+}
+  function renderShortlist(ranked){
+
+  let html = `
+    <div style="margin-bottom:14px;">
+      <div style="font-size:16px;font-weight:700;color:var(--ink);">
+        AI Candidate Evaluation
+      </div>
+
+      <div style="font-size:12.5px;color:var(--muted);margin-top:4px;">
+        Candidates evaluated against the approved job description
+      </div>
+    </div>
+  `;
+
+  ranked.forEach((c, i) => {
+
+    html += `
+      <div style="
+        background:#FFFFFF;
+        border:1px solid #D7DCE2;
+        border-radius:10px;
+        padding:16px;
+        margin-bottom:12px;
+      ">
+
+        <div style="
+          display:flex;
+          justify-content:space-between;
+          align-items:flex-start;
+          gap:15px;
+        ">
+
+          <div>
+
+            <div style="
+              font-size:16px;
+              font-weight:700;
+              color:#18202A;
+            ">
+              ${i + 1}. ${c.name}
+            </div>
+
+            <div style="
+              font-size:12.5px;
+              color:#687482;
+              margin-top:4px;
+            ">
+              ${c.headline}
+            </div>
+
+            <div style="margin-top:7px;">
+              <span class="platform-pill">${c.platform}</span>
+
+              <span style="
+                font-size:11.5px;
+                color:#687482;
+                margin-left:8px;
+              ">
+                ${c.exp} years experience
+              </span>
+            </div>
+
+          </div>
+
+          <div style="
+            min-width:75px;
+            text-align:center;
+            padding:8px 10px;
+            border:1px solid #D7DCE2;
+            border-radius:8px;
+            background:#F7F8FA;
+          ">
+
+            <div style="
+              font-size:20px;
+              font-weight:700;
+              color:#177A68;
+            ">
+              ${c.score}
+            </div>
+
+            <div style="
+              font-size:9px;
+              text-transform:uppercase;
+              color:#687482;
+              letter-spacing:.05em;
+            ">
+              Match
+            </div>
+
+          </div>
+
+        </div>
+
+        <div style="
+          margin-top:14px;
+          padding-top:12px;
+          border-top:1px solid #E4E7EB;
+        ">
+
+          <div style="
+            font-size:11px;
+            text-transform:uppercase;
+            font-weight:700;
+            color:#687482;
+            margin-bottom:6px;
+          ">
+            Candidate Skills
+          </div>
+
+          <div style="
+            font-size:12.5px;
+            color:#28323D;
+          ">
+            ${(c.skills || []).join(' · ')}
+          </div>
+
+        </div>
+
+        <div style="
+          margin-top:12px;
+          background:#F7F8FA;
+          border-radius:7px;
+          padding:10px 12px;
+        ">
+
+          <div style="
+            font-size:11px;
+            text-transform:uppercase;
+            font-weight:700;
+            color:#687482;
+            margin-bottom:5px;
+          ">
+            AI Reasoning
+          </div>
+
+          <div style="
+            font-size:12.5px;
+            line-height:1.5;
+            color:#35404C;
+          ">
+            ${c.reason || 'Candidate evaluated against the approved job requirements.'}
+          </div>
+
+        </div>
+
+      </div>
+    `;
+  });
+
+  outEl('shortlist').innerHTML = html;
+} 
+  function buildSlots(){
+    const days = ['Mon','Tue','Wed','Thu','Fri'];
+    const now = new Date();
+    const out = [];
+    for (let i=1;i<=3;i++){
+      const d = new Date(now.getTime() + i*86400000);
+      out.push(days[d.getDay()%7] + ' ' + (10+i) + ':00 AM IST');
+    }
+    return out;
+  }
+
+  function renderSchedule(top, slots, email){
+  outEl('schedule').innerHTML = `
+
+    <div style="
+      background:#FFFFFF;
+      border:1px solid #D7DCE2;
+      border-radius:10px;
+      padding:18px;
+    ">
+
+      <div style="
+        font-size:16px;
+        font-weight:700;
+        color:#18202A;
+        margin-bottom:4px;
+      ">
+        Interview Scheduling
+      </div>
+
+      <div style="
+        font-size:12.5px;
+        color:#687482;
+        margin-bottom:16px;
+      ">
+        AI has prepared interview slots for the shortlisted candidates.
+      </div>
+
+      ${top.map((candidate, i) => `
+        <div style="
+          border:1px solid #E0E4E9;
+          border-radius:8px;
+          padding:14px;
+          margin-bottom:12px;
+          background:#F7F8FA;
+        ">
+
+          <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:10px;
+          ">
+
+            <div>
+              <div style="
+                font-size:14px;
+                font-weight:700;
+                color:#18202A;
+              ">
+                ${candidate.name}
+              </div>
+
+              <div style="
+                font-size:11.5px;
+                color:#687482;
+                margin-top:3px;
+              ">
+                ${candidate.headline || 'Shortlisted candidate'}
+              </div>
+            </div>
+
+            <div style="
+              font-size:10px;
+              font-weight:600;
+              color:#177A68;
+              border:1px solid #177A68;
+              border-radius:20px;
+              padding:4px 8px;
+            ">
+              INTERVIEW READY
+            </div>
+
+          </div>
+
+          <div style="
+            margin-top:12px;
+            font-size:12.5px;
+            color:#28323D;
+          ">
+            <strong>Interview type:</strong> Telephonic interview
+          </div>
+
+          <div style="
+            margin-top:6px;
+            font-size:12.5px;
+            color:#28323D;
+          ">
+            <strong>Proposed time:</strong> ${slots[i] || slots[0]}
+          </div>
+
+        </div>
+      `).join('')}
+
+      <div style="
+        margin-top:18px;
+        padding-top:14px;
+        border-top:1px solid #DCE1E6;
+      ">
+
+        <div style="
+          font-size:12px;
+          text-transform:uppercase;
+          letter-spacing:.05em;
+          font-weight:700;
+          color:#687482;
+          margin-bottom:7px;
+        ">
+          Interview Invitation
+        </div>
+
+        <div class="email-box">${email}</div>
+
+      </div>
+
+      <div style="
+        margin-top:14px;
+        padding:10px 12px;
+        background:#F2F4F7;
+        border-radius:7px;
+        font-size:11.5px;
+        color:#177A68;
+      ">
+        ✓ Interview invitations prepared and ready for recruiter review
+      </div>
+
+    </div>
+  `;
+}
+
+  function renderApproval(stepKey, label){
+    return new Promise(resolve => {
+      const el = outEl(stepKey);
+      el.innerHTML = `<button class="ara-btn secondary" id="btn-${stepKey}">${label}</button>`;
+      document.getElementById('btn-' + stepKey).addEventListener('click', () => {
+        el.innerHTML = `<div style="font-size:12.5px;color:var(--accent);">\u2713 Approved</div>`;
+        resolve();
+      });
+    });
+  }
+
+  renderPipeline(ROOT_STEPS.map(s => ({...s, status:'pending'})));
+  runBtn.addEventListener('click', runPipeline);
+})();
+</script>

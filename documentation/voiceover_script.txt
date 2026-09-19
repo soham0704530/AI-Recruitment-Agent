@@ -1,0 +1,19 @@
+Hello Vivek. This is the additional technical walkthrough showing the behind-the-scenes workflow and outputs of my AI Recruitment Agent.
+
+I’ll use the same hiring requirement from the previous demonstration: two Mobile Developer openings, mid-level experience of two to four years, with Flutter, Kotlin, REST APIs and Firebase as the required skills, and a target of six applications.
+
+First, the agent converts the hiring requirement into structured recruitment data. It then uses those requirements to generate the job description. The JD contains the role summary, responsibilities, required skills, qualifications, nice-to-have skills and employment details. I have also included the generated JD as a PDF attachment named Mobile_Developer_JD.pdf, so the output is available as an actual document and not only as a screen result.
+
+Next is the sourcing stage. The prototype demonstrates platform sourcing through Naukri, LinkedIn and Indeed. The sourcing layer collects candidate records and normalizes the information into fields such as candidate name, source platform, headline, experience and skills. In this prototype, these are structured demonstration records rather than private live scraping from those platforms.
+
+After sourcing, each candidate is compared with the approved JD. The matching process checks the requested skills against the candidate’s skills and records the number of direct matches. The local fallback scoring logic uses those matches to calculate a transparent match score and ranking.
+
+For example, here is Vikram Singh. His profile matches Flutter, Kotlin, REST APIs and Firebase, and his experience falls within the requested two-to-four-year range. The system therefore records direct matches, calculates the match score and places the candidate in the shortlist based on the configured matching logic.
+
+The shortlist output then shows the candidate rank, source, experience, skills, match score and the reasoning behind the evaluation.
+
+Finally, the shortlisted candidates move to the interview stage. The agent prepares proposed interview slots and generates an interview invitation for recruiter review. The current prototype demonstrates preparation of the schedule; it does not claim to book a real calendar meeting without a calendar integration.
+
+So the complete workflow is: hiring requirement, JD generation and attachment, platform sourcing, profile processing, JD-to-profile matching, candidate shortlisting, and interview scheduling.
+
+This walkthrough shows both the visible outputs and the underlying processing used by the recruitment agent.

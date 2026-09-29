@@ -1,0 +1,13 @@
+Synthetic Demo Resume
+ID: R-001
+Name: Vikram Singh
+Source: Naukri
+SourceType: Simulated Source
+Headline: Mobile Developer, 3.2 yrs — Flutter applications
+Experience: 3.2 years
+Skills: Flutter, Dart, Kotlin, REST APIs, Firebase, Git
+Education: B.Tech Computer Science
+Roles: Mobile Developer, Flutter Developer
+Projects:
+- Built two Flutter mobile applications for e-commerce and payments.
+- Implemented Firebase authentication, notifications and REST API integration.

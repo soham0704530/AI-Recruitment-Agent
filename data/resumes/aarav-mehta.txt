@@ -1,0 +1,13 @@
+Synthetic Demo Resume
+ID: R-002
+Name: Aarav Mehta
+Source: LinkedIn
+SourceType: Simulated Source
+Headline: Flutter Developer, 3 yrs — e-commerce apps
+Experience: 3 years
+Skills: Flutter, Dart, REST APIs, Firebase, Git
+Education: B.Tech Information Technology
+Roles: Flutter Developer, Mobile Developer
+Projects:
+- Developed Flutter e-commerce application with REST APIs.
+- Used Firebase authentication and push notifications.

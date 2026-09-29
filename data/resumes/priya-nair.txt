@@ -1,0 +1,13 @@
+Synthetic Demo Resume
+ID: R-003
+Name: Priya Nair
+Source: Indeed
+SourceType: Simulated Source
+Headline: Android Engineer, 4 yrs — fintech
+Experience: 4 years
+Skills: Kotlin, Android SDK, REST APIs, Git, Agile
+Education: B.E. Computer Engineering
+Roles: Android Engineer, Mobile Developer
+Projects:
+- Built Kotlin fintech features and integrated REST APIs.
+- Worked in Agile delivery teams and maintained Android applications.

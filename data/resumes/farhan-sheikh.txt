@@ -1,0 +1,12 @@
+Synthetic Demo Resume
+ID: R-004
+Name: Farhan Sheikh
+Source: Naukri
+SourceType: Simulated Source
+Headline: Flutter Developer, 1.5 yrs
+Experience: 1.5 years
+Skills: Flutter, Dart, REST APIs, Git
+Education: B.Sc. Computer Science
+Roles: Junior Flutter Developer
+Projects:
+- Developed Flutter screens and integrated REST APIs for a service app.

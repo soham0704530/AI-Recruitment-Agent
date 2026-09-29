@@ -1,0 +1,12 @@
+Synthetic Demo Resume
+ID: R-006
+Name: Rohan Iyer
+Source: Indeed
+SourceType: Simulated Source
+Headline: iOS Developer, 2 yrs — healthtech
+Experience: 2 years
+Skills: Swift, SwiftUI, REST APIs, Git
+Education: B.Tech Computer Science
+Roles: iOS Developer
+Projects:
+- Built Swift healthtech features and consumed REST APIs.

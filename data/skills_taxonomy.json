@@ -1,0 +1,13 @@
+{
+  "Flutter": ["flutter", "flutter framework"],
+  "Kotlin": ["kotlin"],
+  "REST APIs": ["rest api", "rest apis", "restful api", "restful apis", "api integration"],
+  "Firebase": ["firebase", "firebase auth", "firebase authentication"],
+  "Git": ["git", "github", "version control"],
+  "Agile": ["agile", "scrum"],
+  "Dart": ["dart"],
+  "Android SDK": ["android sdk", "android"],
+  "Swift": ["swift"],
+  "React Native": ["react native"],
+  "JavaScript": ["javascript"]
+}

@@ -1,0 +1,199 @@
+{
+  "prototype": true,
+  "source": "Local synthetic resume pool; portal labels are simulated metadata",
+  "jd": {
+    "role": "Mobile Developer",
+    "openings": 2,
+    "experience": "2-4 yrs",
+    "required_skills": [
+      "Flutter",
+      "Kotlin",
+      "REST APIs",
+      "Firebase"
+    ]
+  },
+  "scoring_config": {
+    "weights": {
+      "mandatory_skills": 50,
+      "experience_fit": 20,
+      "preferred_skills": 10,
+      "role_relevance": 10,
+      "evidence": 10
+    },
+    "experience_policy": {
+      "in_range": 1.0,
+      "under_target_floor": 0.0,
+      "over_target_floor": 0.4,
+      "over_target_penalty_per_year": 0.2
+    },
+    "preferred_skills": [
+      "Git",
+      "Agile"
+    ],
+    "zero_required_skill_knockout": true,
+    "tie_breakers": [
+      "required_coverage",
+      "experience_distance_to_midpoint",
+      "preferred_coverage",
+      "candidate_id"
+    ]
+  },
+  "ranking": [
+    {
+      "candidate_id": "R-001",
+      "name": "Vikram Singh",
+      "score": 95,
+      "breakdown": {
+        "mandatorySkills": 50,
+        "experience": 20,
+        "preferredSkills": 5,
+        "roleRelevance": 10,
+        "evidence": 10
+      },
+      "matched_skills": [
+        "Flutter",
+        "Kotlin",
+        "REST APIs",
+        "Firebase"
+      ],
+      "missing_skills": [],
+      "preferred_matched": [
+        "Git"
+      ],
+      "experience_fit": "within requested range",
+      "reason": "4/4 mandatory skills matched; experience is within requested range; 1 preferred skill(s) matched.",
+      "rank": 1
+    },
+    {
+      "candidate_id": "R-002",
+      "name": "Aarav Mehta",
+      "score": 82,
+      "breakdown": {
+        "mandatorySkills": 38,
+        "experience": 20,
+        "preferredSkills": 5,
+        "roleRelevance": 10,
+        "evidence": 10
+      },
+      "matched_skills": [
+        "Flutter",
+        "REST APIs",
+        "Firebase"
+      ],
+      "missing_skills": [
+        "Kotlin"
+      ],
+      "preferred_matched": [
+        "Git"
+      ],
+      "experience_fit": "within requested range",
+      "reason": "3/4 mandatory skills matched; experience is within requested range; 1 preferred skill(s) matched.",
+      "rank": 2
+    },
+    {
+      "candidate_id": "R-003",
+      "name": "Priya Nair",
+      "score": 72,
+      "breakdown": {
+        "mandatorySkills": 25,
+        "experience": 20,
+        "preferredSkills": 10,
+        "roleRelevance": 10,
+        "evidence": 7
+      },
+      "matched_skills": [
+        "Kotlin",
+        "REST APIs"
+      ],
+      "missing_skills": [
+        "Flutter",
+        "Firebase"
+      ],
+      "preferred_matched": [
+        "Git",
+        "Agile"
+      ],
+      "experience_fit": "within requested range",
+      "reason": "2/4 mandatory skills matched; experience is within requested range; 2 preferred skill(s) matched.",
+      "rank": 3
+    },
+    {
+      "candidate_id": "R-004",
+      "name": "Farhan Sheikh",
+      "score": 58,
+      "breakdown": {
+        "mandatorySkills": 25,
+        "experience": 15,
+        "preferredSkills": 5,
+        "roleRelevance": 6,
+        "evidence": 7
+      },
+      "matched_skills": [
+        "Flutter",
+        "REST APIs"
+      ],
+      "missing_skills": [
+        "Kotlin",
+        "Firebase"
+      ],
+      "preferred_matched": [
+        "Git"
+      ],
+      "experience_fit": "outside requested range",
+      "reason": "2/4 mandatory skills matched; experience is outside requested range; 1 preferred skill(s) matched.",
+      "rank": 4
+    },
+    {
+      "candidate_id": "R-005",
+      "name": "Sneha Kulkarni",
+      "score": 50,
+      "breakdown": {
+        "mandatorySkills": 12,
+        "experience": 20,
+        "preferredSkills": 5,
+        "roleRelevance": 6,
+        "evidence": 7
+      },
+      "matched_skills": [
+        "Firebase"
+      ],
+      "missing_skills": [
+        "Flutter",
+        "Kotlin",
+        "REST APIs"
+      ],
+      "preferred_matched": [
+        "Git"
+      ],
+      "experience_fit": "within requested range",
+      "reason": "1/4 mandatory skills matched; experience is within requested range; 1 preferred skill(s) matched.",
+      "rank": 5
+    },
+    {
+      "candidate_id": "R-006",
+      "name": "Rohan Iyer",
+      "score": 50,
+      "breakdown": {
+        "mandatorySkills": 12,
+        "experience": 20,
+        "preferredSkills": 5,
+        "roleRelevance": 6,
+        "evidence": 7
+      },
+      "matched_skills": [
+        "REST APIs"
+      ],
+      "missing_skills": [
+        "Flutter",
+        "Kotlin",
+        "Firebase"
+      ],
+      "preferred_matched": [
+        "Git"
+      ],
+      "experience_fit": "within requested range",
+      "reason": "1/4 mandatory skills matched; experience is within requested range; 1 preferred skill(s) matched.",
+      "rank": 6
+    }
+  ]
+}

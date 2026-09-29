@@ -1,19 +1,37 @@
-Hello Vivek. This is the additional technical walkthrough showing the behind-the-scenes workflow and outputs of my AI Recruitment Agent.
+AI RECRUITMENT AGENT — DEMO VOICEOVER
 
-I’ll use the same hiring requirement from the previous demonstration: two Mobile Developer openings, mid-level experience of two to four years, with Flutter, Kotlin, REST APIs and Firebase as the required skills, and a target of six applications.
+INTRO
+This is my AI Recruitment Agent prototype for Technical Pots IT Solutions. The goal is to automate the recruitment workflow while keeping candidate evaluation explainable and under recruiter control.
 
-First, the agent converts the hiring requirement into structured recruitment data. It then uses those requirements to generate the job description. The JD contains the role summary, responsibilities, required skills, qualifications, nice-to-have skills and employment details. I have also included the generated JD as a PDF attachment named Mobile_Developer_JD.pdf, so the output is available as an actual document and not only as a screen result.
+1. REQUIREMENT
+The recruiter enters the role, number of openings, experience range, required skills, and target applications. For this demo I am using a Mobile Developer role with two openings, a two-to-four-year experience target, and Flutter, Kotlin, REST APIs and Firebase as required skills.
 
-Next is the sourcing stage. The prototype demonstrates platform sourcing through Naukri, LinkedIn and Indeed. The sourcing layer collects candidate records and normalizes the information into fields such as candidate name, source platform, headline, experience and skills. In this prototype, these are structured demonstration records rather than private live scraping from those platforms.
+2. JOB DESCRIPTION
+The agent converts the hiring requirement into a structured job description. The generated JD contains the role summary, responsibilities, required skills, qualifications, preferred skills, and culture and benefits. The recruiter reviews the JD before moving forward.
 
-After sourcing, each candidate is compared with the approved JD. The matching process checks the requested skills against the candidate’s skills and records the number of direct matches. The local fallback scoring logic uses those matches to calculate a transparent match score and ranking.
+3. RESUME SOURCING
+For this prototype, the candidate pool is six synthetic resumes stored locally. Each resume carries simulated source metadata such as Naukri, LinkedIn or Indeed. I am not claiming live scraping from those platforms. In production, this source adapter would connect to approved ATS or job-board integrations.
 
-For example, here is Vikram Singh. His profile matches Flutter, Kotlin, REST APIs and Firebase, and his experience falls within the requested two-to-four-year range. The system therefore records direct matches, calculates the match score and places the candidate in the shortlist based on the configured matching logic.
+4. RESUME PROCESSING
+The system processes each resume and extracts structured information including experience, skills, education, previous roles and project evidence. This converts unstructured resume content into data that the matching engine can evaluate consistently.
 
-The shortlist output then shows the candidate rank, source, experience, skills, match score and the reasoning behind the evaluation.
+5. MATCHING
+Next, every processed resume is compared against the approved JD. The UI shows each required skill as matched or missing, compares experience with the requested range, and displays relevant candidate evidence.
 
-Finally, the shortlisted candidates move to the interview stage. The agent prepares proposed interview slots and generates an interview invitation for recruiter review. The current prototype demonstrates preparation of the schedule; it does not claim to book a real calendar meeting without a calendar integration.
+6. SCORING
+The important part is that the final numerical score is deterministic. The model is fifty points for mandatory skills, twenty for experience fit, ten for preferred skills, ten for role relevance, and ten for relevant evidence. The LLM can help with language understanding, but it does not arbitrarily choose the final score.
 
-So the complete workflow is: hiring requirement, JD generation and attachment, platform sourcing, profile processing, JD-to-profile matching, candidate shortlisting, and interview scheduling.
+7. RANKING
+The application calculates the score for every candidate and ranks them using the same rules. The UI shows the complete ranking, each candidate's score breakdown, and the arithmetic behind the score.
 
-This walkthrough shows both the visible outputs and the underlying processing used by the recruitment agent.
+8. WHY NUMBER ONE
+For the top-ranked candidate, the system generates an explanation from the same score breakdown. I can therefore show exactly which skills matched, how experience was handled, which preferred skills matched, and why the candidate ranked above the next candidate.
+
+9. RECRUITER CONTROL
+The recruiter then confirms the shortlist. The system does not make an irreversible hiring decision automatically.
+
+10. INTERVIEW PREPARATION
+Finally, the system prepares interview slots and invitation drafts for the shortlisted candidates. In this prototype they are drafts for recruiter review; no external calendar meeting is actually booked and no email is sent.
+
+CLOSING
+The key architecture is simple: the LLM handles unstructured language understanding, while the application controls structured business logic, scoring and ranking. This makes the recruitment workflow easier to inspect, reproduce and extend.

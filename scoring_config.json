@@ -1,0 +1,18 @@
+{
+  "weights": {
+    "mandatory_skills": 50,
+    "experience_fit": 20,
+    "preferred_skills": 10,
+    "role_relevance": 10,
+    "evidence": 10
+  },
+  "experience_policy": {
+    "in_range": 1.0,
+    "under_target_floor": 0.0,
+    "over_target_floor": 0.4,
+    "over_target_penalty_per_year": 0.2
+  },
+  "preferred_skills": ["Git", "Agile"],
+  "zero_required_skill_knockout": true,
+  "tie_breakers": ["required_coverage", "experience_distance_to_midpoint", "preferred_coverage", "candidate_id"]
+}

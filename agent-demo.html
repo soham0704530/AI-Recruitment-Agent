@@ -285,12 +285,14 @@
   .ara-stat{ background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px 14px; }
   .ara-stat-num{ font-size:22px; font-weight:700; font-family:'IBM Plex Mono',monospace; color:var(--accent); }
   .ara-stat-label{ font-size:11.5px; color:var(--muted); margin-top:2px; }
+
+  @media(max-width:760px){ .jd-meta-grid{grid-template-columns:1fr 1fr!important;} }
 </style>
 
 <div class="ara-root">
   <div class="ara-wrap">
     <div class="ara-header">
-      <div class="ara-kicker">AI RECRUITMENT AGENT — LIVE DEMO</div>
+      <div class="ara-kicker">AI RECRUITMENT AGENT — LOCAL DEMO</div>
       <h1 class="ara-title">Autonomous hiring pipeline</h1>
       <div class="ara-sub">Give it a role and headcount. The agent parses the requirement, drafts the JD, searches candidate pools across job platforms, ranks matches, and proposes interview slots — pausing for your approval at two checkpoints.</div>
     </div>
@@ -317,6 +319,10 @@
             <option>Senior (5+ yrs)</option>
           </select>
         </div>
+        <div class="ara-field">
+          <label>Target Applications</label>
+          <input id="ara-target-apps" type="number" min="1" value="20" placeholder="e.g. 20" />
+        </div>
       </div>
       <div class="ara-field" style="margin-top:14px;">
         <label>Anthropic API key <span style="color:#5A6675;">— only needed if you opened this file outside Claude.ai (a plain .html file has no built-in access to the API)</span></label>
@@ -340,27 +346,25 @@
     { key:'understand', title:'Understand the requirement', desc:'Normalize role, skills, seniority and headcount into a structured brief.' },
     { key:'jd', title:'Generate job description', desc:"Draft the JD in the company's standard format." },
     { key:'approve_jd', title:'Recruiter checkpoint — approve JD', desc:'Human-in-the-loop review before publishing.' },
-    { key:'source', title:'Source candidates', desc:'Search Naukri, LinkedIn and Indeed for matching profiles.' },
-    { key:'shortlist', title:'AI shortlisting', desc:'Score every sourced profile against the JD and rank them.' },
+    { key:'source', title:'Source candidates', desc:'Load demo resumes with source metadata; production connectors can replace the local source.' },
+    { key:'process', title:'Process resumes', desc:'Extract structured candidate fields and retain resume evidence before matching.' },
+    { key:'shortlist', title:'AI shortlisting', desc:'Parse every resume, compare it against the JD, calculate a weighted score and rank all candidates.' },
     { key:'approve_shortlist', title:'Recruiter checkpoint — confirm shortlist', desc:'Human-in-the-loop review before outreach.' },
     { key:'schedule', title:'Schedule interviews', desc:'Propose slots and draft the interview invitation for the top candidate.' },
     { key:'done', title:'Pipeline complete', desc:'Summary of the run.' },
   ];
 
-  const CANDIDATE_POOL = [
-    { id:'C-104', name:'Aarav Mehta', headline:'Flutter Developer, 3 yrs — e-commerce apps', skills:['Flutter','Dart','Firebase','REST APIs','CI/CD'], exp:3, platform:'LinkedIn' },
-    { id:'C-118', name:'Priya Nair', headline:'Android Engineer, 4 yrs — fintech', skills:['Kotlin','Android SDK','REST APIs','Room DB'], exp:4, platform:'Naukri.com' },
-    { id:'C-127', name:'Rohan Iyer', headline:'iOS Developer, 2 yrs — healthtech', skills:['Swift','SwiftUI','REST APIs','Core Data'], exp:2, platform:'Indeed' },
-    { id:'C-133', name:'Sneha Kulkarni', headline:'React Native Developer, 3 yrs', skills:['React Native','JavaScript','Firebase','Redux'], exp:3, platform:'LinkedIn' },
-    { id:'C-142', name:'Vikram Singh', headline:'Cross-platform Mobile Dev, 5 yrs', skills:['Flutter','Kotlin','Firebase','REST APIs','GraphQL'], exp:5, platform:'Naukri.com' },
-    { id:'C-151', name:'Ananya Rao', headline:'Business Analyst, 3 yrs — SaaS', skills:['Requirement Gathering','SQL','Jira','Stakeholder Management','Agile'], exp:3, platform:'LinkedIn' },
-    { id:'C-159', name:'Karan Patel', headline:'Business Analyst, 5 yrs — banking domain', skills:['SQL','BRD/FRD','Stakeholder Management','Power BI','Agile'], exp:5, platform:'Naukri.com' },
-    { id:'C-166', name:'Divya Menon', headline:'Junior Business Analyst, 1 yr', skills:['Excel','SQL','Documentation','Agile'], exp:1, platform:'Indeed' },
-    { id:'C-171', name:'Farhan Sheikh', headline:'Flutter Developer, 1.5 yrs', skills:['Flutter','Dart','REST APIs'], exp:1.5, platform:'Naukri.com' },
-    { id:'C-180', name:'Meera Joshi', headline:'Mobile QA turned Android Dev, 2 yrs', skills:['Kotlin','Android SDK','Testing','REST APIs'], exp:2, platform:'LinkedIn' },
-    { id:'C-188', name:'Aditya Kapoor', headline:'Senior Mobile Architect, 7 yrs', skills:['Flutter','Kotlin','Swift','System Design','REST APIs'], exp:7, platform:'LinkedIn' },
-    { id:'C-193', name:'Ishita Bose', headline:'Product/Business Analyst, 4 yrs', skills:['Stakeholder Management','SQL','Wireframing','Agile','Jira'], exp:4, platform:'Indeed' },
+  // Synthetic demo resume pool. Sources are explicitly simulated; no live scraping is performed.
+  const RESUME_POOL = [
+    { id:'R-001', name:'Vikram Singh', headline:'Mobile Developer, 3.2 yrs — Flutter applications', experience:3.2, source:'Naukri', sourceType:'Simulated Source', resumeFile:'vikram-singh.txt', skills:['Flutter','Dart','Kotlin','REST APIs','Firebase','Git'], education:'B.Tech Computer Science', roles:['Mobile Developer','Flutter Developer'], projects:['Built two Flutter mobile applications for e-commerce and payments.','Implemented Firebase authentication, notifications and REST API integration.'] },
+    { id:'R-002', name:'Aarav Mehta', headline:'Flutter Developer, 3 yrs — e-commerce apps', experience:3, source:'LinkedIn', sourceType:'Simulated Source', resumeFile:'aarav-mehta.txt', skills:['Flutter','Dart','REST APIs','Firebase','Git'], education:'B.Tech Information Technology', roles:['Flutter Developer','Mobile Developer'], projects:['Developed Flutter e-commerce application with REST APIs.','Used Firebase authentication and push notifications.'] },
+    { id:'R-003', name:'Priya Nair', headline:'Android Engineer, 4 yrs — fintech', experience:4, source:'Indeed', sourceType:'Simulated Source', resumeFile:'priya-nair.txt', skills:['Kotlin','Android SDK','REST APIs','Git','Agile'], education:'B.E. Computer Engineering', roles:['Android Engineer','Mobile Developer'], projects:['Built Kotlin fintech features and integrated REST APIs.','Worked in Agile delivery teams and maintained Android applications.'] },
+    { id:'R-004', name:'Farhan Sheikh', headline:'Flutter Developer, 1.5 yrs', experience:1.5, source:'Naukri', sourceType:'Simulated Source', resumeFile:'farhan-sheikh.txt', skills:['Flutter','Dart','REST APIs','Git'], education:'B.Sc. Computer Science', roles:['Junior Flutter Developer'], projects:['Developed Flutter screens and integrated REST APIs for a service app.'] },
+    { id:'R-005', name:'Sneha Kulkarni', headline:'React Native Developer, 3 yrs', experience:3, source:'LinkedIn', sourceType:'Simulated Source', resumeFile:'sneha-kulkarni.txt', skills:['React Native','JavaScript','Firebase','Redux','Git'], education:'B.Tech Computer Science', roles:['React Native Developer'], projects:['Built cross-platform React Native applications using Firebase.'] },
+    { id:'R-006', name:'Rohan Iyer', headline:'iOS Developer, 2 yrs — healthtech', experience:2, source:'Indeed', sourceType:'Simulated Source', resumeFile:'rohan-iyer.txt', skills:['Swift','SwiftUI','REST APIs','Git'], education:'B.Tech Computer Science', roles:['iOS Developer'], projects:['Built Swift healthtech features and consumed REST APIs.'] }
   ];
+  const SCORING_CONFIG = { mandatorySkills:50, experienceFit:20, preferredSkills:10, roleRelevance:10, evidence:10 };
+  const DEFAULT_PREFERRED = ['Git','Agile'];
 
   const $ = (sel) => document.querySelector(sel);
   const pipelineEl = $('#ara-pipeline');
@@ -399,8 +403,21 @@
 
   function setStepStatus(steps, key, status){
     const s = steps.find(x => x.key === key);
+    if (!s) return;
     s.status = status;
-    renderPipeline(steps);
+
+    // Update only the step chrome. Do NOT rebuild the pipeline DOM here.
+    // Re-rendering used to erase the JD, source list, ranking and schedule
+    // outputs every time a step changed state. Keeping the existing DOM means
+    // all generated evidence remains visible on the same page for the demo.
+    const el = document.getElementById('step-' + key);
+    if (!el) return;
+    el.className = 'ara-step ' + status;
+    const num = el.querySelector('.ara-step-num');
+    const tag = el.querySelector('.ara-step-tag');
+    const index = steps.findIndex(x => x.key === key);
+    if (num) num.textContent = status === 'done' ? '\u2713' : String(index + 1);
+    if (tag) tag.textContent = status.toUpperCase();
   }
 
   function outEl(key){ return document.getElementById('out-' + key); }
@@ -453,17 +470,73 @@
 
   function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
 
-  function scoreCandidatesLocally(requirement, pool){
-    const reqSkills = requirement.skills.map(s => s.toLowerCase());
-    return pool
-      .map(c => {
-        const hits = c.skills.filter(sk => reqSkills.some(rs => sk.toLowerCase().includes(rs) || rs.includes(sk.toLowerCase())));
-        return { ...c, hits: hits.length };
-      })
-      .filter(c => c.hits > 0)
-      .sort((a,b) => b.hits - a.hits)
-      .slice(0, 6);
+  function normSkill(v){
+    return String(v||'').toLowerCase().replace(/\bapis?\b/g,'api').replace(/[^a-z0-9+#.]+/g,' ').trim();
   }
+  function skillMatches(candidateSkill, requiredSkill){
+    const a=normSkill(candidateSkill), b=normSkill(requiredSkill);
+    if(!a||!b) return false;
+    if(a===b) return true;
+    const aliases={
+      'rest api':['rest apis','restful api','restful apis'],
+      'rest apis':['rest api','restful api','restful apis'],
+      'firebase':['firebase auth','firebase authentication'],
+      'flutter':['flutter framework']
+    };
+    return (aliases[a]||[]).includes(b) || (aliases[b]||[]).includes(a);
+  }
+  function parseExpRange(text){
+    const m=String(text||'').match(/(\d+(?:\.\d+)?)\s*(?:-|–|to)\s*(\d+(?:\.\d+)?)/i);
+    if(m) return {min:parseFloat(m[1]),max:parseFloat(m[2])};
+    const one=String(text||'').match(/(\d+(?:\.\d+)?)/);
+    return one ? {min:parseFloat(one[1]),max:parseFloat(one[1])} : {min:0,max:99};
+  }
+  function experienceScore(years, range){
+    if(years>=range.min && years<=range.max) return 20;
+    if(years<range.min) return Math.max(0, 20 * (years / Math.max(range.min,1)));
+    const over=years-range.max;
+    return Math.max(8, 20 - over*4);
+  }
+  function roleScore(candidate, role){
+    const r=String(role||'').toLowerCase();
+    const roles=candidate.roles.map(x=>x.toLowerCase());
+    if(roles.some(x=>x===r)) return 10;
+    const roleWords=r.split(/\s+/).filter(x=>x.length>2);
+    const overlap=roleWords.filter(w=>roles.some(x=>x.includes(w))).length;
+    if(overlap>=2) return 9;
+    if(overlap===1) return 6;
+    if((r.includes('mobile') && candidate.skills.some(x=>['flutter','kotlin','swift','react native'].includes(x.toLowerCase())))) return 5;
+    return 2;
+  }
+  function evaluateCandidates(requirement, pool){
+    const reqSkills=(requirement.requiredSkills||requirement.skills||[]).filter(Boolean);
+    const preferred=(requirement.preferredSkills||DEFAULT_PREFERRED).filter(Boolean);
+    const range=parseExpRange(requirement.experience);
+    return pool.map(c=>{
+      const matched=reqSkills.filter(req=>c.skills.some(sk=>skillMatches(sk,req)));
+      const missing=reqSkills.filter(req=>!matched.includes(req));
+      const prefMatched=preferred.filter(req=>c.skills.some(sk=>skillMatches(sk,req)));
+      const mandatoryScore=reqSkills.length ? SCORING_CONFIG.mandatorySkills*(matched.length/reqSkills.length) : SCORING_CONFIG.mandatorySkills;
+      const expScore=experienceScore(c.experience,range);
+      const prefScore=preferred.length ? SCORING_CONFIG.preferredSkills*(prefMatched.length/preferred.length) : 0;
+      const role=roleScore(c,requirement.role);
+      const evidenceHits=c.projects.filter(pr=>{const t=pr.toLowerCase(); return reqSkills.some(sk=>t.includes(String(sk).toLowerCase().replace('apis','api')));}).length;
+      const evidence=Math.min(SCORING_CONFIG.evidence, evidenceHits>=2?10:evidenceHits===1?7:3);
+      const score=Math.round(mandatoryScore+expScore+prefScore+role+evidence);
+      const reasonParts=[];
+      if(matched.length===reqSkills.length) reasonParts.push('all mandatory skills matched');
+      else reasonParts.push(matched.length+'/'+reqSkills.length+' mandatory skills matched');
+      if(c.experience>=range.min && c.experience<=range.max) reasonParts.push('experience is within the requested range');
+      else reasonParts.push('experience is outside the requested range');
+      if(prefMatched.length) reasonParts.push(prefMatched.length+' preferred skill'+(prefMatched.length>1?'s':'')+' matched');
+      return {...c, matchedSkills:matched, missingSkills:missing, preferredMatched:prefMatched, breakdown:{mandatorySkills:Math.round(mandatoryScore),experience:Math.round(expScore),preferredSkills:Math.round(prefScore),roleRelevance:role,evidence:evidence}, score, reason:reasonParts.join('; ')+'.'};
+    }).sort((a,b)=>b.score-a.score || b.experience-a.experience || a.name.localeCompare(b.name));
+  }
+
+  function scoreCandidatesLocally(requirement, pool){
+    return evaluateCandidates(requirement,pool);
+  }
+
 
   async function runPipeline(){
     runBtn.disabled = true;
@@ -571,88 +644,103 @@ Requirements:
       statusLine.textContent = 'Waiting for recruiter approval of JD...';
       await renderApproval('approve_jd', 'Approve this JD and continue to sourcing');
       setStepStatus(steps, 'approve_jd', 'done');
+      outEl('approve_jd').innerHTML = '<div style="font-size:12.5px;color:var(--accent);">✓ Approved</div>';
       log('Recruiter approved JD.');
 
       // Step 4: sourcing
       setStepStatus(steps, 'source', 'running');
-      statusLine.textContent = 'Searching job platforms...';
-      log('Querying Naukri.com...');
+      statusLine.textContent = 'Loading candidate resume source...';
+      log('Loading local synthetic resume pool...');
       await sleep(450);
-      log('Querying LinkedIn...');
+      log('Reading source metadata (simulated Naukri / LinkedIn / Indeed)...');
       await sleep(450);
-      log('Querying Indeed...');
+      log('Processing resume files...');
       await sleep(400);
-      const sourced = scoreCandidatesLocally({ skills }, CANDIDATE_POOL);
-      outEl('source').innerHTML = `<div style="font-size:13px;color:var(--muted);">Found <b style="color:var(--ink)">${sourced.length}</b> matching profiles across 3 platforms.</div>` +
-        sourced.map(c => `<div style="margin-top:8px;font-size:13px;">${c.name} <span class="platform-pill">${c.platform}</span></div>`).join('');
+      const sourced = RESUME_POOL.map(c=>({...c, processingStatus:'Processed ✓'}));
+      outEl('source').innerHTML = `<div style="font-size:13px;color:var(--muted);margin-bottom:10px;">Found <b style="color:var(--ink)">${sourced.length}</b> synthetic demo resumes. External platforms are represented as simulated sources.</div>` +
+        sourced.map(c => `<div style="margin-top:8px;padding:9px 10px;border:1px solid #E0E4E9;border-radius:7px;background:#fff;"><b>${c.name}</b> <span class="platform-pill">${c.source} — ${c.sourceType}</span><div style="font-size:11.5px;color:#687482;margin-top:3px;">${c.resumeFile} · ${c.processingStatus}</div></div>`).join('');
       setStepStatus(steps, 'source', 'done');
-      log('Sourcing complete: ' + sourced.length + ' profiles collected.');
+      outEl('source').innerHTML = `<div style="font-size:13px;color:var(--muted);margin-bottom:10px;">Found <b style="color:var(--ink)">${sourced.length}</b> synthetic demo resumes. External platforms are represented as simulated sources.</div>` +
+        sourced.map(c => `<div style="margin-top:8px;padding:9px 10px;border:1px solid #E0E4E9;border-radius:7px;background:#fff;"><b>${c.name}</b> <span class="platform-pill">${c.source} — ${c.sourceType}</span><div style="font-size:11.5px;color:#687482;margin-top:3px;">${c.resumeFile} · ${c.processingStatus}</div></div>`).join('');
+      log('Sourcing complete: ' + sourced.length + ' demo resumes collected.');
 
-      // Step 5: shortlisting
+      // Step 5: explicit resume processing / extraction
+      setStepStatus(steps, 'process', 'running');
+      statusLine.textContent = 'Extracting structured candidate profiles...';
+      log('Extracting structured fields from each resume...');
+      await sleep(400);
+      outEl('process').innerHTML = `
+        <div style="font-size:13px;color:var(--muted);margin-bottom:10px;">Resume extraction completed locally for the six synthetic demo resumes.</div>
+        <div style="overflow-x:auto;background:#fff;border:1px solid #D7DCE2;border-radius:10px;">
+          <div style="min-width:720px;display:grid;grid-template-columns:1.2fr 100px 1.6fr 1.4fr 90px;padding:9px 11px;background:#F2F4F7;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#687482;text-transform:uppercase;">
+            <div>Candidate</div><div>Exp.</div><div>Skills extracted</div><div>Roles / education</div><div>Status</div>
+          </div>
+          ${sourced.map(c=>`<div style="min-width:720px;display:grid;grid-template-columns:1.2fr 100px 1.6fr 1.4fr 90px;padding:10px 11px;border-top:1px solid #E4E7EB;font-size:11.5px;align-items:center;">
+            <div><b>${c.name}</b><div style="font-size:10.5px;color:#687482;">${c.resumeFile}</div></div>
+            <div>${c.experience} yrs</div>
+            <div>${c.skills.join(' · ')}</div>
+            <div>${c.roles.join(' · ')}<br><span style="color:#687482;">${c.education}</span></div>
+            <div style="color:#177A68;font-weight:700;">✓ Extracted</div>
+          </div>`).join('')}
+        </div>`;
+      setStepStatus(steps, 'process', 'done');
+
+      // Step 6: shortlisting — deterministic, explainable scoring
       setStepStatus(steps, 'shortlist', 'running');
-      log('Evaluating candidates against the approved job description...');
-      statusLine.textContent = 'Scoring candidates against JD...';
-      const shortlistPrompt = `Job description: ${jd.title}. Required skills: ${jd.requiredSkills.join(', ')}. Candidates (JSON): ${JSON.stringify(sourced.map(c => ({id:c.id, headline:c.headline, skills:c.skills, exp:c.exp})))}. Score each candidate 0-100 for fit against the JD and give a one-sentence reason. Return ONLY a JSON array like [{"id":"C-104","score":87,"reason":"..."}], sorted by score descending, same length as input.`;
-      let ranked;
-      try {
-        const rankText = await callClaude(shortlistPrompt);
-        const scores = extractJson(rankText);
-        ranked = scores
-          .map(s => ({ ...sourced.find(c => c.id === s.id), score: s.score, reason: s.reason }))
-          .filter(c => c && c.name)
-          .sort((a,b) => b.score - a.score);
-      } catch (e) { 
-  log('Candidate evaluation completed using the local matching engine.'); 
-  ranked = sourced.map(c => ({ ...c, score: Math.min(96, 55 + c.hits*10), reason: c.hits + ' of the requested skills matched directly.' })); 
-}
+      log('Evaluating every resume against the approved job description...');
+      statusLine.textContent = 'Comparing resumes and calculating explainable scores...';
+      const ranked = evaluateCandidates({ role, experience:exp, requiredSkills:jd.requiredSkills || skills, preferredSkills:DEFAULT_PREFERRED }, sourced);
+      log('Candidate evaluation completed using the deterministic matching engine.');
       renderShortlist(ranked);
       setStepStatus(steps, 'shortlist', 'done');
+      renderShortlist(ranked);
       log('Shortlisting complete. Top candidate: ' + (ranked[0] ? ranked[0].name : 'n/a'));
 
       // Step 6: approval
       setStepStatus(steps, 'approve_shortlist', 'running');
       statusLine.textContent = 'Waiting for recruiter to confirm shortlist...';
-      await renderApproval('approve_shortlist', 'Confirm shortlist and schedule interviews');
+      await renderApproval('approve_shortlist', 'Confirm shortlist and prepare interviews');
       setStepStatus(steps, 'approve_shortlist', 'done');
+      outEl('approve_shortlist').innerHTML = '<div style="font-size:12.5px;color:var(--accent);">✓ Shortlist confirmed</div>';
       log('Recruiter confirmed shortlist.');
 
       // Step 7: scheduling
       setStepStatus(steps, 'schedule', 'running'); 
 statusLine.textContent = 'Preparing interview slots...'; 
 
-const top = ranked.slice(0, Math.min(openings + 1, ranked.length)); 
+const top = ranked.slice(0, Math.min(Math.max(openings, 1), ranked.length));
 const slots = buildSlots(); 
 
 log('Preparing interview schedule for shortlisted candidates...'); 
 
 await sleep(500); 
-let email = ''; 
-try { 
-  email = await callClaude(`Write a short, warm interview invitation email (under 90 words) to ${top[0].name} for the "${jd.title}" role at Technical Pots IT Solutions, proposing a telephonic interview on ${slots[0]}. Plain text only, no subject line prefix like "Subject:" needed on its own line is fine.`); 
-} catch (e) { 
-  email = `Hi ${top[0].name},
-
-Thanks for your profile for the ${jd.title} role at Technical Pots IT Solutions. We'd like to set up a short telephonic interview on ${slots[0]}. Please let us know if that works, or share a better time.
-
-Looking forward to speaking with you.
-
-Best,
-Talent Acquisition Team`; 
+const emails = [];
+for (let i = 0; i < top.length; i++) {
+  const candidate = top[i];
+  const slot = slots[i] || slots[0];
+  let email = '';
+  try {
+    email = await callClaude(`Write a short, warm interview invitation email (under 90 words) to ${candidate.name} for the "${jd.title}" role at Technical Pots IT Solutions, proposing a telephonic interview on ${slot}. Plain text only.`);
+  } catch (e) {
+    email = `Hi ${candidate.name},\n\nThanks for your profile for the ${jd.title} role at Technical Pots IT Solutions. We'd like to set up a short telephonic interview on ${slot}. Please let us know if that works, or share a better time.\n\nLooking forward to speaking with you.\n\nBest,\nTalent Acquisition Team`;
+  }
+  emails.push(email);
 }
 
 setStepStatus(steps, 'schedule', 'done');
-statusLine.textContent = 'Interview schedule prepared.';
+renderSchedule(top, slots, emails);
+statusLine.textContent = 'Interview preparation complete.';
 
       // Step 8: done
       setStepStatus(steps, 'done', 'running');
       await sleep(300);
+      setStepStatus(steps, 'done', 'done');
       outEl('done').innerHTML = `
         <div class="ara-summary">
-          <div class="ara-stat"><div class="ara-stat-num">${sourced.length}</div><div class="ara-stat-label">Profiles sourced</div></div>
-          <div class="ara-stat"><div class="ara-stat-num">${ranked.length}</div><div class="ara-stat-label">Candidates scored</div></div>
-          <div class="ara-stat"><div class="ara-stat-num">${top.length}</div><div class="ara-stat-label">Interviews scheduled</div></div>
+          <div class="ara-stat"><div class="ara-stat-num">${sourced.length}</div><div class="ara-stat-label">Resumes processed</div></div>
+          <div class="ara-stat"><div class="ara-stat-num">${ranked.length}</div><div class="ara-stat-label">Candidates ranked</div></div>
+          <div class="ara-stat"><div class="ara-stat-num">${top.length}</div><div class="ara-stat-label">Interview drafts</div></div>
         </div>`;
-      setStepStatus(steps, 'done', 'done');
       renderJD(jd);
       statusLine.textContent = 'Pipeline complete.';
       log('<b style="color:var(--accent)">Pipeline complete.</b>');
@@ -791,159 +879,127 @@ function renderJD(jd){
   `;
 }
   function renderShortlist(ranked){
+    const top=ranked[0];
+    const reqSkills=(window.currentJD && window.currentJD.requiredSkills) || [];
+    const second=ranked[1];
+    const gap=second ? top.score-second.score : top ? top.score : 0;
 
-  let html = `
-    <div style="margin-bottom:14px;">
-      <div style="font-size:16px;font-weight:700;color:var(--ink);">
-        AI Candidate Evaluation
+    let html=`
+      <div style="margin-bottom:14px;">
+        <div style="font-size:16px;font-weight:700;color:var(--ink);">Candidate Processing & Ranking</div>
+        <div style="font-size:12.5px;color:var(--muted);margin-top:4px;">
+          Every demo resume is processed, converted into structured candidate data, compared with the approved JD, and scored using deterministic application rules.
+        </div>
       </div>
 
-      <div style="font-size:12.5px;color:var(--muted);margin-top:4px;">
-        Candidates evaluated against the approved job description
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;">
+        <div class="jd-meta-box"><div class="jd-meta-label">Resumes processed</div><div class="jd-meta-value">${ranked.length}</div></div>
+        <div class="jd-meta-box"><div class="jd-meta-label">JD skills checked</div><div class="jd-meta-value">${reqSkills.length}</div></div>
+        <div class="jd-meta-box"><div class="jd-meta-label">Scoring method</div><div class="jd-meta-value">Rule-based</div></div>
       </div>
-    </div>
-  `;
 
-  ranked.forEach((c, i) => {
-
-    html += `
-      <div style="
-        background:#FFFFFF;
-        border:1px solid #D7DCE2;
-        border-radius:10px;
-        padding:16px;
-        margin-bottom:12px;
-      ">
-
-        <div style="
-          display:flex;
-          justify-content:space-between;
-          align-items:flex-start;
-          gap:15px;
-        ">
-
-          <div>
-
-            <div style="
-              font-size:16px;
-              font-weight:700;
-              color:#18202A;
-            ">
-              ${i + 1}. ${c.name}
-            </div>
-
-            <div style="
-              font-size:12.5px;
-              color:#687482;
-              margin-top:4px;
-            ">
-              ${c.headline}
-            </div>
-
-            <div style="margin-top:7px;">
-              <span class="platform-pill">${c.platform}</span>
-
-              <span style="
-                font-size:11.5px;
-                color:#687482;
-                margin-left:8px;
-              ">
-                ${c.exp} years experience
-              </span>
-            </div>
-
-          </div>
-
-          <div style="
-            min-width:75px;
-            text-align:center;
-            padding:8px 10px;
-            border:1px solid #D7DCE2;
-            border-radius:8px;
-            background:#F7F8FA;
-          ">
-
-            <div style="
-              font-size:20px;
-              font-weight:700;
-              color:#177A68;
-            ">
-              ${c.score}
-            </div>
-
-            <div style="
-              font-size:9px;
-              text-transform:uppercase;
-              color:#687482;
-              letter-spacing:.05em;
-            ">
-              Match
-            </div>
-
-          </div>
-
+      <div style="background:#F7F8FA;border:1px solid #D7DCE2;border-radius:10px;padding:14px;margin-bottom:16px;">
+        <div style="font-size:11px;text-transform:uppercase;font-weight:700;color:#687482;margin-bottom:8px;letter-spacing:.05em;">Scoring model</div>
+        <div style="font-size:12px;color:#35404C;line-height:1.7;">
+          <b>Mandatory skills 50</b> · <b>Experience fit 20</b> · <b>Preferred skills 10</b> · <b>Role relevance 10</b> · <b>Evidence 10</b>
         </div>
+        <div style="font-size:11.5px;color:#687482;margin-top:5px;">The LLM may help with language understanding, but the numeric ranking is calculated by application logic.</div>
+      </div>
 
-        <div style="
-          margin-top:14px;
-          padding-top:12px;
-          border-top:1px solid #E4E7EB;
-        ">
-
-          <div style="
-            font-size:11px;
-            text-transform:uppercase;
-            font-weight:700;
-            color:#687482;
-            margin-bottom:6px;
-          ">
-            Candidate Skills
-          </div>
-
-          <div style="
-            font-size:12.5px;
-            color:#28323D;
-          ">
-            ${(c.skills || []).join(' · ')}
-          </div>
-
+      <div style="font-size:11px;text-transform:uppercase;font-weight:700;color:#687482;margin-bottom:8px;letter-spacing:.05em;">Candidate ranking</div>
+      <div style="overflow-x:auto;background:#fff;border:1px solid #D7DCE2;border-radius:10px;margin-bottom:16px;">
+        <div style="min-width:650px;display:grid;grid-template-columns:45px 1.5fr 1fr 90px 100px;padding:10px 12px;background:#F2F4F7;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#687482;text-transform:uppercase;">
+          <div>#</div><div>Candidate</div><div>Source</div><div>Experience</div><div style="text-align:right;">Score</div>
         </div>
-
-        <div style="
-          margin-top:12px;
-          background:#F7F8FA;
-          border-radius:7px;
-          padding:10px 12px;
-        ">
-
-          <div style="
-            font-size:11px;
-            text-transform:uppercase;
-            font-weight:700;
-            color:#687482;
-            margin-bottom:5px;
-          ">
-            AI Reasoning
-          </div>
-
-          <div style="
-            font-size:12.5px;
-            line-height:1.5;
-            color:#35404C;
-          ">
-            ${c.reason || 'Candidate evaluated against the approved job requirements.'}
-          </div>
-
-        </div>
-
+        ${ranked.map((c,i)=>`<div style="min-width:650px;display:grid;grid-template-columns:45px 1.5fr 1fr 90px 100px;align-items:center;padding:11px 12px;border-top:1px solid #E4E7EB;font-size:12.5px;">
+          <div style="font-family:'IBM Plex Mono',monospace;color:#687482;">${i+1}</div>
+          <div><b style="color:#18202A;">${c.name}</b><div style="font-size:11px;color:#687482;">${c.resumeFile}</div></div>
+          <div><span class="platform-pill" style="margin-left:0;">${c.source}</span></div>
+          <div style="color:#35404C;">${c.experience} yrs</div>
+          <div style="text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:700;color:#177A68;">${c.score}/100</div>
+        </div>`).join('')}
       </div>
     `;
-  });
 
-  outEl('shortlist').innerHTML = html;
-} 
+    ranked.forEach((c,i)=>{
+      const b=c.breakdown;
+      const range=parseExpRange($('#ara-exp').value);
+      const expFit=(c.experience>=range.min && c.experience<=range.max);
+      html+=`<div style="background:#fff;border:1px solid ${i===0?'#177A68':'#D7DCE2'};border-radius:10px;padding:16px;margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;gap:15px;align-items:flex-start;">
+          <div>
+            <div style="font-size:16px;font-weight:700;color:#18202A;">${i+1}. ${c.name}</div>
+            <div style="font-size:12.5px;color:#687482;margin-top:4px;">${c.headline}</div>
+            <div style="margin-top:7px;"><span class="platform-pill" style="margin-left:0;">${c.source} — ${c.sourceType}</span><span style="font-size:11.5px;color:#687482;margin-left:8px;">${c.resumeFile} · ${c.experience} years</span></div>
+          </div>
+          <div style="min-width:75px;text-align:center;padding:8px 10px;border:1px solid #D7DCE2;border-radius:8px;background:#F7F8FA;"><div style="font-size:20px;font-weight:700;color:#177A68;">${c.score}</div><div style="font-size:9px;text-transform:uppercase;color:#687482;letter-spacing:.05em;">/100</div></div>
+        </div>
+
+        <div style="margin-top:14px;padding-top:12px;border-top:1px solid #E4E7EB;">
+          <div style="font-size:11px;text-transform:uppercase;font-weight:700;color:#687482;margin-bottom:6px;">Candidate vs JD</div>
+          <div style="font-size:12px;line-height:1.8;">
+            ${reqSkills.map(req=>{
+              const matched=c.matchedSkills.some(m=>skillMatches(m,req));
+              return `<span style="display:inline-block;margin:0 5px 5px 0;padding:3px 7px;border-radius:12px;background:${matched?'#E7F5F1':'#FCECEA'};color:${matched?'#177A68':'#A4493E'};border:1px solid ${matched?'#B9D9D0':'#EBC8C3'};">${matched?'✓':'✗'} ${req}</span>`;
+            }).join('')}
+          </div>
+          <div style="font-size:12px;color:#35404C;margin-top:5px;"><b>Experience:</b> ${expFit?'✓ Within requested range':'⚠ Outside requested range'} · ${c.experience} yrs vs ${$('#ara-exp').value}</div>
+          <div style="font-size:12px;color:#35404C;margin-top:3px;"><b>Matched skills:</b> ${c.matchedSkills.length?c.matchedSkills.join(' · '):'None'} · <b>Missing:</b> ${c.missingSkills.length?c.missingSkills.join(' · '):'None'}</div>
+        </div>
+
+        <div style="margin-top:12px;display:grid;grid-template-columns:repeat(5,1fr);gap:6px;">
+          <div class="jd-meta-box"><div class="jd-meta-label">Skills</div><div class="jd-meta-value">${b.mandatorySkills}/50</div></div>
+          <div class="jd-meta-box"><div class="jd-meta-label">Experience</div><div class="jd-meta-value">${b.experience}/20</div></div>
+          <div class="jd-meta-box"><div class="jd-meta-label">Preferred</div><div class="jd-meta-value">${b.preferredSkills}/10</div></div>
+          <div class="jd-meta-box"><div class="jd-meta-label">Role</div><div class="jd-meta-value">${b.roleRelevance}/10</div></div>
+          <div class="jd-meta-box"><div class="jd-meta-label">Evidence</div><div class="jd-meta-value">${b.evidence}/10</div></div>
+        </div>
+
+        <details style="margin-top:10px;">
+          <summary style="cursor:pointer;font-size:12px;font-weight:700;color:#334155;">View score arithmetic</summary>
+          <div style="margin-top:9px;background:#F7F8FA;border-radius:7px;padding:10px 12px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;line-height:1.8;color:#35404C;">
+            ${b.mandatorySkills} / 50 mandatory skills<br>
+            + ${b.experience} / 20 experience fit<br>
+            + ${b.preferredSkills} / 10 preferred skills<br>
+            + ${b.roleRelevance} / 10 role relevance<br>
+            + ${b.evidence} / 10 relevant evidence<br>
+            = <b>${c.score} / 100 final score</b>
+          </div>
+        </details>
+
+        <div style="margin-top:12px;background:#F7F8FA;border-radius:7px;padding:10px 12px;"><div style="font-size:11px;text-transform:uppercase;font-weight:700;color:#687482;margin-bottom:5px;">Selection reasoning</div><div style="font-size:12.5px;line-height:1.5;color:#35404C;">${c.reason}</div></div>
+        <details style="margin-top:10px;"><summary style="cursor:pointer;font-size:12px;font-weight:700;color:#334155;">View extracted resume profile & evidence</summary><div style="margin-top:9px;font-size:12px;line-height:1.65;color:#35404C;"><b>Education:</b> ${c.education}<br><b>Previous roles:</b> ${c.roles.join(' · ')}<br><b>Skills:</b> ${c.skills.join(' · ')}<br><b>Project evidence:</b><ul style="margin:5px 0 0 18px;">${c.projects.map(p=>`<li>${p}</li>`).join('')}</ul></div></details>
+      </div>`;
+    });
+
+    if(top){
+      html+=`<div style="background:#F2F8F6;border:1px solid #B9D9D0;border-radius:10px;padding:16px;margin-top:14px;">
+        <div style="font-size:15px;font-weight:700;color:#183D36;">WHY ${top.name.toUpperCase()} RANKED #1</div>
+        <div style="font-size:12.5px;line-height:1.6;color:#29463F;margin-top:8px;">${top.name} ranked first because ${top.reason} The final score is <b>${top.score}/100</b>. ${second?`Candidate #2, ${second.name}, scored ${second.score}/100, so the margin is <b>${gap} point${gap===1?'':'s'}</b>.`:''}</div>
+        <div style="font-size:11.5px;color:#4E6B64;margin-top:8px;">This explanation is generated from the same score breakdown shown above.</div>
+      </div>`;
+    }
+    html += `<div style="margin-top:14px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;"><button class="ara-btn secondary" id="export-ranking-btn" type="button">Export evaluation JSON</button><span style="font-size:11px;color:#687482;">Exports the same structured data shown in the UI.</span></div>`;
+    outEl('shortlist').innerHTML=html;
+    const exportBtn = document.getElementById('export-ranking-btn');
+    if(exportBtn){
+      exportBtn.addEventListener('click', ()=>{
+        const payload = {
+          generatedAt: new Date().toISOString(),
+          prototype: true,
+          source: 'Local synthetic resume pool; portal labels are simulated metadata',
+          jobDescription: window.currentJD || {},
+          scoring: SCORING_CONFIG,
+          ranking: ranked.map((c,i)=>({rank:i+1,id:c.id,name:c.name,source:c.source,resumeFile:c.resumeFile,experience:c.experience,matchedSkills:c.matchedSkills,missingSkills:c.missingSkills,breakdown:c.breakdown,score:c.score,reason:c.reason}))
+        };
+        const blob = new Blob([JSON.stringify(payload,null,2)], {type:'application/json'});
+        const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='candidate-evaluation.json'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+      });
+    }
+  }
+
   function buildSlots(){
-    const days = ['Mon','Tue','Wed','Thu','Fri'];
+    const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     const now = new Date();
     const out = [];
     for (let i=1;i<=3;i++){
@@ -953,7 +1009,7 @@ function renderJD(jd){
     return out;
   }
 
-  function renderSchedule(top, slots, email){
+  function renderSchedule(top, slots, emails){
   outEl('schedule').innerHTML = `
 
     <div style="
@@ -977,7 +1033,7 @@ function renderJD(jd){
         color:#687482;
         margin-bottom:16px;
       ">
-        AI has prepared interview slots for the shortlisted candidates.
+        Interview slots and an invitation draft have been prepared for recruiter review; no external meeting was booked.
       </div>
 
       ${top.map((candidate, i) => `
@@ -1022,7 +1078,7 @@ function renderJD(jd){
               border-radius:20px;
               padding:4px 8px;
             ">
-              INTERVIEW READY
+              DRAFT READY
             </div>
 
           </div>
@@ -1046,25 +1102,9 @@ function renderJD(jd){
         </div>
       `).join('')}
 
-      <div style="
-        margin-top:18px;
-        padding-top:14px;
-        border-top:1px solid #DCE1E6;
-      ">
-
-        <div style="
-          font-size:12px;
-          text-transform:uppercase;
-          letter-spacing:.05em;
-          font-weight:700;
-          color:#687482;
-          margin-bottom:7px;
-        ">
-          Interview Invitation
-        </div>
-
-        <div class="email-box">${email}</div>
-
+      <div style="margin-top:18px;padding-top:14px;border-top:1px solid #DCE1E6;">
+        <div style="font-size:12px;text-transform:uppercase;letter-spacing:.05em;font-weight:700;color:#687482;margin-bottom:7px;">Interview Invitation Drafts</div>
+        ${top.map((candidate,i)=>`<div style="margin-top:10px;"><div style="font-size:11.5px;font-weight:700;color:#35404C;margin-bottom:4px;">${candidate.name}</div><div class="email-box">${(emails && emails[i]) || ''}</div></div>`).join('')}
       </div>
 
       <div style="

@@ -1,0 +1,23 @@
+Subject: AI Recruitment Agent — Updated Demo and Documentation
+
+Hi Vivek,
+
+Thank you for the feedback. I have updated the AI Recruitment Agent demo to make the behind-the-scenes recruitment workflow and outputs visible.
+
+The updated demo now shows:
+
+- How the candidate resume pool is sourced in the prototype, including simulated Naukri/LinkedIn/Indeed source metadata.
+- How resumes are processed into structured candidate information.
+- How every candidate is compared against the approved JD.
+- The scoring criteria and weights used for candidate evaluation.
+- The score breakdown and arithmetic for each candidate.
+- The complete candidate ranking and the evidence behind the top-ranked candidate.
+- Recruiter shortlist confirmation.
+- Interview schedule and invitation drafts prepared for recruiter review.
+
+I have also included documentation explaining the workflow, candidate selection logic, scoring model, prototype boundaries, and demo voiceover.
+
+The prototype intentionally distinguishes simulated source metadata and interview drafts from production integrations; it does not claim live scraping or external meeting/email execution.
+
+Best regards,
+Soham

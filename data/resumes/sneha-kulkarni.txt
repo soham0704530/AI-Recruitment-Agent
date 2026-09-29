@@ -1,0 +1,12 @@
+Synthetic Demo Resume
+ID: R-005
+Name: Sneha Kulkarni
+Source: LinkedIn
+SourceType: Simulated Source
+Headline: React Native Developer, 3 yrs
+Experience: 3 years
+Skills: React Native, JavaScript, Firebase, Redux, Git
+Education: B.Tech Computer Science
+Roles: React Native Developer
+Projects:
+- Built cross-platform React Native applications using Firebase.
